@@ -1,12 +1,14 @@
 package com.anton.sportshop.controller;
 
-import com.anton.sportshop.model.*;
+import com.anton.sportshop.model.AppUser;
+import com.anton.sportshop.model.CartItem;
+import com.anton.sportshop.model.Order;
+import com.anton.sportshop.model.OrderItem;
 import com.anton.sportshop.service.impl.AppUserDetailsService;
 import com.anton.sportshop.service.impl.CartService;
 import com.anton.sportshop.service.impl.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

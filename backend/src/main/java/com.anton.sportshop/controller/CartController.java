@@ -3,7 +3,6 @@ package com.anton.sportshop.controller;
 import com.anton.sportshop.model.AppUser;
 import com.anton.sportshop.model.Cart;
 import com.anton.sportshop.model.CartItem;
-import com.anton.sportshop.service.ItemService;
 import com.anton.sportshop.service.impl.AppUserDetailsService;
 import com.anton.sportshop.service.impl.CartService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.*;
 
 @RestController
