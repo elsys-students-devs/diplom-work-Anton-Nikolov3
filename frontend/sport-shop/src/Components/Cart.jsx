@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CreateOrder from "./CreateOrder";
 
 export default function Cart({ setCartCount }) {
     const [cartItems, setCartItems] = useState([]);
@@ -109,6 +110,7 @@ export default function Cart({ setCartCount }) {
                     ))}
                 </tbody>
             </table>
+            <CreateOrder/>
         </div>
     );
 }

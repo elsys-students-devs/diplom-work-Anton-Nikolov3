@@ -9,7 +9,7 @@ import Register from './Components/Register'
 import Shop from './Components/Shop'
 import Admin from './Components/Admin'
 import UpdateItem from './Components/UpdateItem'
-import Orders from './Components/Orders'
+import MyOrders from './Components/MyOrders'
 
 export  default function App() {
   const categories = [
@@ -78,9 +78,9 @@ export  default function App() {
             </div>
             
             {admin? 
-            <li><Link to="/admin">Admin</Link></li>
-            : ""
+            <li><Link to="/admin">Admin</Link></li>: ""
             }
+            
             
             
             <div id='right'>
@@ -108,8 +108,9 @@ export  default function App() {
             <Route path='/shop' element={<Shop 
             setCartCount={setCartCount} categories={categories} />}/>
             <Route path='/admin' element={<Admin categories={categories}/>}></Route>
+
             <Route path='/update' element={<UpdateItem/>}></Route>
-            <Route path='/orders' element={<Orders/>}></Route>-ш
+            <Route path='/orders' element={<MyOrders/>}></Route>
         </Routes>
       </BrowserRouter>
   )
