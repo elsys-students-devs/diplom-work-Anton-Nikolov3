@@ -9,6 +9,7 @@ import Register from './Components/Register'
 import Shop from './Components/Shop'
 import Admin from './Components/Admin'
 import UpdateItem from './Components/UpdateItem'
+import Orders from './Components/Orders'
 
 export  default function App() {
   const categories = [
@@ -73,6 +74,7 @@ export  default function App() {
                   Cart{cartCount > 0 && `(${cartCount})`}
               </Link>
               </li>
+              <li><Link to="/orders">My Orders</Link></li>
             </div>
             
             {admin? 
@@ -107,6 +109,7 @@ export  default function App() {
             setCartCount={setCartCount} categories={categories} />}/>
             <Route path='/admin' element={<Admin categories={categories}/>}></Route>
             <Route path='/update' element={<UpdateItem/>}></Route>
+            <Route path='/orders' element={<Orders/>}></Route>-ш
         </Routes>
       </BrowserRouter>
   )
