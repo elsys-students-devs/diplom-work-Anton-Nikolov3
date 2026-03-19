@@ -1,11 +1,12 @@
 package com.anton.sportshop.controller;
 
+import com.anton.sportshop.dto.order_item.OrderItemRequestDTO;
 import com.anton.sportshop.model.AppUser;
 import com.anton.sportshop.model.Cart;
 import com.anton.sportshop.model.CartItem;
 import com.anton.sportshop.service.AppUserDetailsService;
 import com.anton.sportshop.service.CartService;
-import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,9 +19,11 @@ import java.util.*;
 @RequestMapping("/cart")
 public class CartController {
 
+
     private final CartService cartService;
     private final AppUserDetailsService appUserDetailsService;
 
+    @Autowired
     public CartController(CartService cartService,
                           AppUserDetailsService appUserDetailsService) {
         this.cartService = cartService;
@@ -41,37 +44,25 @@ public class CartController {
         return cartService.getCartByUserId(appUser.getId()).getItems();
     }
 
-    /*
-        {
-            "itemId": ?,
-            "quantity": ?
-        }
-
-     */
-
     @PostMapping
-    List<CartItem> addItemToCart(@RequestBody JsonNode json, @AuthenticationPrincipal UserDetails user){
+    List<CartItem> addItemToCart(@Valid @RequestBody OrderItemRequestDTO orderItemRequestDTO, @AuthenticationPrincipal UserDetails user){
 
         Long userId = appUserDetailsService.loadAppUserByUsername(user.getUsername()).getId();
 
-        Long itemId = json.get("itemId").asLong();
+        Long itemId = orderItemRequestDTO.itemId();
+        int quantity = orderItemRequestDTO.quantity();
         Cart cart = cartService.getCartByUserId(userId);
 
-        int quantity = json.get("quantity").asInt();
-
-
         cartService.addToCart(userId, itemId, quantity);
-
-
         return cart.getItems();
     }
 
 
     @PutMapping("/edit")
-    List<CartItem> editItemQuantity(@RequestBody JsonNode json, @AuthenticationPrincipal UserDetails user){
+    List<CartItem> editItemQuantity(@Valid @RequestBody OrderItemRequestDTO orderItemRequestDTO, @AuthenticationPrincipal UserDetails user){
         Long userId = appUserDetailsService.loadAppUserByUsername(user.getUsername()).getId();
-        Long itemId = json.get("itemId").asLong();
-        int quantity = json.get("quantity").asInt();
+        Long itemId = orderItemRequestDTO.itemId();
+        int quantity = orderItemRequestDTO.quantity();
         return cartService.editQuantity(userId, itemId, quantity).getItems();
     }
 
@@ -81,6 +72,5 @@ public class CartController {
         Long userId = appUserDetailsService.loadAppUserByUsername(user.getUsername()).getId();
         return cartService.removeItem(userId, itemId).getItems();
     }
-
 
 }

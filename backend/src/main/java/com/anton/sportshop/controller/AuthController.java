@@ -1,15 +1,15 @@
 package com.anton.sportshop.controller;
 
+import com.anton.sportshop.dto.user.LoginUserRequestDTO;
+import com.anton.sportshop.dto.user.RegisterUserRequestDTO;
+import com.anton.sportshop.mapper.AppUserMapper;
 import com.anton.sportshop.model.AppUser;
-import com.anton.sportshop.model.Cart;
-import com.anton.sportshop.repository.UserRepository;
 import com.anton.sportshop.service.AppUserDetailsService;
 import com.anton.sportshop.util.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,40 +24,41 @@ import java.util.Map;
 @RequestMapping("/auth")
 
 public class AuthController {
-
-
-    private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final AppUserDetailsService appUserDetailsService;
     private final JwtUtil jwtUtil;
+    private final AppUserMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder encoder,
-                          AppUserDetailsService appUserDetailsService, JwtUtil jwtUtil){
-        this.userRepository = userRepository;
+    @Autowired
+    public AuthController(PasswordEncoder encoder,
+                          AppUserDetailsService appUserDetailsService,
+                          JwtUtil jwtUtil,
+                          AppUserMapper mapper,
+                          PasswordEncoder passwordEncoder){
         this.encoder = encoder;
         this.appUserDetailsService = appUserDetailsService;
         this.jwtUtil = jwtUtil;
+        this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AppUser user){
-        user.setRole("USER");
-        user.setCart(new Cart(user));
-        user.setRole("USER");
-        user.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return ResponseEntity.ok("Registered!");
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterUserRequestDTO request){
+        return ResponseEntity.ok(appUserDetailsService.registerUser(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AppUser user) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginUserRequestDTO loginUserRequestDTO) {
+        AppUser user = mapper.loginToEntity(loginUserRequestDTO);
+        user.setPassword(passwordEncoder.encode(loginUserRequestDTO.password()));
 
         UserDetails loadedUser = appUserDetailsService
                 .loadUserByUsername(user.getUsername());
 
-        if (encoder.matches(user.getPassword(), loadedUser.getPassword())) {
+        if (encoder.matches(loginUserRequestDTO.password(), loadedUser.getPassword()))  {
 
             String token = jwtUtil.generateToken(loadedUser);
 
@@ -76,5 +77,4 @@ public class AuthController {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body("Invalid password or username");
     }
-
 }

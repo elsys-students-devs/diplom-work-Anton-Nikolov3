@@ -1,5 +1,6 @@
 package com.anton.sportshop.service;
 
+import com.anton.sportshop.exception.ResourceNotFoundException;
 import com.anton.sportshop.model.AppUser;
 import com.anton.sportshop.model.Cart;
 import com.anton.sportshop.model.CartItem;
@@ -19,6 +20,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
+    @Autowired
     public CartService(UserRepository userRepository,
                        ItemRepository itemRepository,
                        CartRepository cartRepository,
@@ -36,8 +38,10 @@ public class CartService {
 
 
     public Cart addToCart(Long userId, Long itemId, int quantity){
-        AppUser user = userRepository.findById(userId).orElse(null);
-        Item item = itemRepository.findById(itemId).orElse(null);
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User was not found"));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Item was not found"));
 
         Cart cart = user.getCart();
         if(cart == null){
@@ -56,12 +60,7 @@ public class CartService {
             cart.addItem(cartItem);
         }
 
-
-
         return cartRepository.save(cart);
-
-
-
     }
 
     public Cart removeItem(Long userId, Long itemId){

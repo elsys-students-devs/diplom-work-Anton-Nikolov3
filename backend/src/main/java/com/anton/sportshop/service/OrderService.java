@@ -1,5 +1,6 @@
 package com.anton.sportshop.service;
 
+import com.anton.sportshop.exception.ResourceNotFoundException;
 import com.anton.sportshop.model.Order;
 import com.anton.sportshop.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
+    @Autowired
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
@@ -21,7 +23,8 @@ public class OrderService {
     }
 
     public Order getOrderById(Long orderId){
-        return orderRepository.findById(orderId).orElse(null);
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order was not found"));
     }
 
     public void makeOrder(Order order){
@@ -33,7 +36,8 @@ public class OrderService {
     }
 
     public void updateOrder(Long orderId, Order updatedOrder){
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found!"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found!"));
 
         order.setAddress(updatedOrder.getAddress());
         order.setFirstName(updatedOrder.getFirstName());

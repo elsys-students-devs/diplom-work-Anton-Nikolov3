@@ -4,6 +4,7 @@ import com.anton.sportshop.model.*;
 import com.anton.sportshop.service.AppUserDetailsService;
 import com.anton.sportshop.service.CartService;
 import com.anton.sportshop.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class OrderController {
     private final AppUserDetailsService appUserDetailsService;
     private final CartService cartService;
 
+    @Autowired
     public OrderController(OrderService orderService,
                            AppUserDetailsService appUserDetailsService,
                            CartService cartService) {
@@ -50,7 +52,7 @@ public class OrderController {
     }
 
     @PostMapping
-    ResponseEntity<?> makeOrder(@RequestBody Order order, @AuthenticationPrincipal UserDetails user){
+    ResponseEntity<?> makeOrder(@Valid @RequestBody Order order, @AuthenticationPrincipal UserDetails user){
         AppUser appUser = appUserDetailsService.loadAppUserByUsername(user.getUsername());
 
 
@@ -92,7 +94,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}")
-    ResponseEntity<?> putOrder(@PathVariable Long orderId, @RequestBody Order updatedOrder, @AuthenticationPrincipal UserDetails user) {
+    ResponseEntity<?> putOrder(@PathVariable Long orderId,@Valid @RequestBody Order updatedOrder, @AuthenticationPrincipal UserDetails user) {
         Order order = orderService.getOrderById(orderId);
         AppUser appUser = appUserDetailsService.loadAppUserByUsername(user.getUsername());
         if (order.getUser().equals(appUser)) {

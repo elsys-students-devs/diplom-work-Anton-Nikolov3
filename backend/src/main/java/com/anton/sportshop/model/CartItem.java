@@ -2,24 +2,13 @@ package com.anton.sportshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Getter
-@Setter
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CartItem {
-
-    public CartItem(){}
-
-    public CartItem(Cart cart, Item item, int quantity){
-        this.item = item;
-        this.quantity = quantity;
-        this.cart = cart;
-    };
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +16,7 @@ public class CartItem {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name= "cart_id")
+    @JoinColumn(name = "cart_id")
     @JsonIgnore
     private Cart cart;
 
@@ -35,35 +24,9 @@ public class CartItem {
     @JoinColumn(name = "product_id")
     private Item item;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
+    public CartItem(Cart cart, Item item, int quantity) {
         this.item = item;
+        this.quantity = quantity;
+        this.cart = cart;
     }
 }
