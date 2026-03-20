@@ -2,9 +2,7 @@ package com.anton.sportshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ public class Order {
     private Long id;
 
     @ManyToOne()
-    @JoinColumn(name="user_id", unique = true)
+    @JoinColumn(name="user_id")
     @JsonIgnore
     private AppUser user;
 
@@ -37,4 +35,5 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
+
 }
