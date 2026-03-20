@@ -1,13 +1,27 @@
 package com.anton.sportshop.mapper;
 
+
 import com.anton.sportshop.dto.order.OrderCreateRequestDTO;
 import com.anton.sportshop.dto.order.OrderResponseDTO;
 import com.anton.sportshop.dto.order.OrderUpdateRequestDTO;
+import com.anton.sportshop.dto.order_item.OrderItemResponseDTO;
 import com.anton.sportshop.model.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class OrderMapper {
+
+
+    private final OrderItemMapper orderItemMapper;
+
+    @Autowired
+    public OrderMapper(OrderItemMapper orderItemMapper){
+        this.orderItemMapper = orderItemMapper;
+    }
+
     public Order createToEntity(OrderCreateRequestDTO requestDTO){
         return mapAllFields(new Order(), requestDTO);
     }
@@ -17,12 +31,19 @@ public class OrderMapper {
     }
 
     public OrderResponseDTO toDto(Order order){
+        List<OrderItemResponseDTO> items = order.getItems() == null
+                ? List.of()
+                : order.getItems().stream()
+                .map(orderItemMapper::toDto)
+                .toList();
+
         return new OrderResponseDTO(
                 order.getFirstName(),
                 order.getLastName(),
                 order.getPhoneNumber(),
                 order.getAddress(),
-                order.getPrice()
+                order.getPrice(),
+                items
         );
     }
 
@@ -31,6 +52,7 @@ public class OrderMapper {
         order.setLastName(dto.lastName());
         order.setPhoneNumber(dto.phoneNumber());
         order.setAddress(dto.address());
+
 
         return order;
     }
@@ -44,3 +66,5 @@ public class OrderMapper {
         return order;
     }
 }
+
+OrderMapper.java
