@@ -18,18 +18,15 @@ public class CartService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
 
     @Autowired
     public CartService(UserRepository userRepository,
                        ItemRepository itemRepository,
-                       CartRepository cartRepository,
-                       CartItemRepository cartItemRepository) {
+                       CartRepository cartRepository) {
 
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
         this.cartRepository = cartRepository;
-        this.cartItemRepository = cartItemRepository;
     }
 
     public Cart getCartByUserId(Long id){
@@ -39,15 +36,11 @@ public class CartService {
 
     public Cart addToCart(Long userId, Long itemId, int quantity){
         AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User was not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ResourceNotFoundException("Item was not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
         Cart cart = user.getCart();
-        if(cart == null){
-            cart = new Cart(user);
-            user.setCart(cart);
-        }
 
         if(item != null && cart.getItems().stream().anyMatch( i -> i.getItem().getId().equals(itemId))){
             cart.getItems().stream()
@@ -61,6 +54,7 @@ public class CartService {
         }
 
         return cartRepository.save(cart);
+
     }
 
     public Cart removeItem(Long userId, Long itemId){
@@ -77,7 +71,6 @@ public class CartService {
         Cart cart = getCartByUserId(userId);
 
         cart.getItems().stream().filter(i -> i.getItem().getId().equals(itemId)).findFirst().ifPresent(i -> i.setQuantity(quantity));
-
 
         return cartRepository.save(cart);
     }
