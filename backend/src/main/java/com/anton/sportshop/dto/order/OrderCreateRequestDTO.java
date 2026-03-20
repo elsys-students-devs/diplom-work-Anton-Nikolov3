@@ -10,7 +10,5 @@ public record OrderCreateRequestDTO(
         @NotBlank String firstName,
         @NotBlank String lastName,
         @NotBlank String phoneNumber,
-        @NotBlank String address,
-        @NotEmpty List<OrderItemRequestDTO> items
-) {
-}
+        @NotBlank String address
+) {}
