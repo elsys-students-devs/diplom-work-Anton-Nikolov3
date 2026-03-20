@@ -1,5 +1,8 @@
 package com.anton.sportshop.controller;
 
+import com.anton.sportshop.dto.order.OrderCreateRequestDTO;
+import com.anton.sportshop.dto.order.OrderUpdateRequestDTO;
+import com.anton.sportshop.mapper.OrderMapper;
 import com.anton.sportshop.model.*;
 import com.anton.sportshop.service.AppUserDetailsService;
 import com.anton.sportshop.service.CartService;
@@ -21,14 +24,17 @@ public class OrderController {
     private final OrderService orderService;
     private final AppUserDetailsService appUserDetailsService;
     private final CartService cartService;
+    private final OrderMapper orderMapper;
 
     @Autowired
     public OrderController(OrderService orderService,
                            AppUserDetailsService appUserDetailsService,
-                           CartService cartService) {
+                           CartService cartService,
+                           OrderMapper orderMapper) {
         this.orderService = orderService;
         this.appUserDetailsService = appUserDetailsService;
         this.cartService = cartService;
+        this.orderMapper = orderMapper;
     }
 
     @GetMapping
@@ -52,11 +58,11 @@ public class OrderController {
     }
 
     @PostMapping
-    ResponseEntity<?> makeOrder(@Valid @RequestBody Order order, @AuthenticationPrincipal UserDetails user){
+    ResponseEntity<?> makeOrder(@Valid @RequestBody OrderCreateRequestDTO createRequestDTO, @AuthenticationPrincipal UserDetails user){
         AppUser appUser = appUserDetailsService.loadAppUserByUsername(user.getUsername());
 
-
         List<CartItem> cartItems = cartService.getCartByUserId(appUser.getId()).getItems();
+        Order order = orderMapper.createToEntity(createRequestDTO);
 
         if(cartItems.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You cart is empty");
@@ -76,8 +82,8 @@ public class OrderController {
         order.setPrice(items.stream().mapToDouble(OrderItem::getPrice).sum());
 
         cartService.clearItems(appUser.getId());
-        orderService.makeOrder(order);
-        return ResponseEntity.ok(order);
+        orderService.makeOrder(order, appUser);
+        return ResponseEntity.ok(orderMapper.toDto(order));
     }
 
     @DeleteMapping("/{orderId}")
@@ -92,22 +98,4 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
-    @PatchMapping("/{orderId}")
-    ResponseEntity<?> putOrder(@PathVariable Long orderId,@Valid @RequestBody Order updatedOrder, @AuthenticationPrincipal UserDetails user) {
-        Order order = orderService.getOrderById(orderId);
-        AppUser appUser = appUserDetailsService.loadAppUserByUsername(user.getUsername());
-        if (order.getUser().equals(appUser)) {
-            try{
-                orderService.updateOrder(order.getId(), updatedOrder);
-            } catch (RuntimeException e) {
-
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body("Order updated");
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
-}
+... (19 lines left)
