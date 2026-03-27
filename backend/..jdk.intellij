@@ -1,0 +1,31 @@
+{
+  "vendor": "Eclipse",
+  "product": "Temurin",
+  "flavour": "AdoptOpenJDK HotSpot",
+  "jdk_version_major": 21,
+  "jdk_version": "21.0.9",
+  "suggested_sdk_name": "temurin-21",
+  "shared_index_aliases": [
+    "temurin-21.0.9",
+    "temurin-21",
+    "21.0.9",
+    "21"
+  ],
+  "packages": [
+    {
+      "os": "windows",
+      "arch": "x86_64",
+      "version": "21.0.9",
+      "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.9%2B10/OpenJDK21U-jdk_x64_windows_hotspot_21.0.9_10.zip",
+      "package_type": "zip",
+      "unpack_prefix_filter": "jdk-21.0.9+10",
+      "package_root_prefix": "jdk-21.0.9+10",
+      "package_to_java_home_prefix": "",
+      "archive_file_name": "OpenJDK21U-jdk_x64_windows_hotspot_21.0.9_10.zip",
+      "install_folder_name": "temurin-21.0.9",
+      "archive_size": 204962060,
+      "unpacked_size": 343604705,
+      "sha256": "1c67df516e9795c0b09f5714bfe151da2e3cc988082042f5bbb60d75e4e63fb5"
+    }
+  ]
+}
