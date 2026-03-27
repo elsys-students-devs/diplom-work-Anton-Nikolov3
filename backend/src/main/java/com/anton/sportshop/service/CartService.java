@@ -5,7 +5,6 @@ import com.anton.sportshop.model.AppUser;
 import com.anton.sportshop.model.Cart;
 import com.anton.sportshop.model.CartItem;
 import com.anton.sportshop.model.Item;
-import com.anton.sportshop.repository.CartItemRepository;
 import com.anton.sportshop.repository.CartRepository;
 import com.anton.sportshop.repository.ItemRepository;
 import com.anton.sportshop.repository.UserRepository;
