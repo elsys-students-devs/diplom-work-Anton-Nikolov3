@@ -66,5 +66,3 @@ public class OrderMapper {
         return order;
     }
 }
-
-OrderMapper.java

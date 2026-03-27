@@ -33,7 +33,6 @@ public class CartService {
         return cartRepository.findByUserId(id);
     }
 
-
     public Cart addToCart(Long userId, Long itemId, int quantity){
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));

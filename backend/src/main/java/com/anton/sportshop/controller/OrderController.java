@@ -69,13 +69,13 @@ public class OrderController {
         }
 
         List<OrderItem> items = cartItems.stream().map(ci -> {
-                                                                         OrderItem oi = new OrderItem();
-                                                                         oi.setItem(ci.getItem());
-                                                                         oi.setQuantity(ci.getQuantity());
-                                                                         oi.setPrice(ci.getItem().getPrice() * ci.getQuantity());
-                                                                         oi.setOrder(order);
-                                                                         return oi;
-                                                                      }).toList();
+            OrderItem oi = new OrderItem();
+            oi.setItem(ci.getItem());
+            oi.setQuantity(ci.getQuantity());
+            oi.setPrice(ci.getItem().getPrice() * ci.getQuantity());
+            oi.setOrder(order);
+            return oi;
+        }).toList();
 
         order.setUser(appUser);
         order.setItems(items);
@@ -98,4 +98,21 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-... (19 lines left)
+
+    @PatchMapping("/{orderId}")
+    ResponseEntity<?> putOrder(@PathVariable Long orderId, @Valid @RequestBody OrderUpdateRequestDTO orderUpdateRequestDTO, @AuthenticationPrincipal UserDetails user) {
+        Order order = orderService.getOrderById(orderId);
+        AppUser appUser = appUserDetailsService.loadAppUserByUsername(user.getUsername());
+        if (order.getUser().equals(appUser)) {
+            try{
+                orderService.updateOrder(order.getId(), orderMapper.updateEntity(order, orderUpdateRequestDTO));
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body("Order updated");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+}
