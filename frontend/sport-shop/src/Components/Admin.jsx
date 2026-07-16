@@ -3,6 +3,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Admin({categories}) {
   let navigate = useNavigate();
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate("/");
+    }
+  }, [isAdmin, navigate]);
+
+
   const [items, setItems] = useState([]);
   const [currentItem, setCurrentItem] = useState(
     { id: "", name: "", price: "",description:"", image_url: "", category: ""});
@@ -30,7 +39,9 @@ export default function Admin({categories}) {
         name: currentItem.name,
         price: Number(currentItem.price),
         image_url: currentItem.image_url,
-        category:  currentItem.category}),
+        category:  currentItem.category,
+        description: currentItem.description
+      }),
     });
     const newItem = await res.json();
     setItems([...items, newItem]);

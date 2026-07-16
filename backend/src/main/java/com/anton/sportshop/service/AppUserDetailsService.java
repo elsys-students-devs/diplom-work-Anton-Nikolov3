@@ -6,6 +6,7 @@ import com.anton.sportshop.exception.ResourceConflictException;
 import com.anton.sportshop.exception.ResourceNotFoundException;
 import com.anton.sportshop.mapper.AppUserMapper;
 import com.anton.sportshop.model.AppUser;
+import com.anton.sportshop.model.Item;
 import com.anton.sportshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -48,5 +49,18 @@ public class AppUserDetailsService implements UserDetailsService {
 
     public AppUser loadAppUserByUsername(String username){
         return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    public void addFavoriteProduct(String username, Item item){
+        AppUser user = userRepository.findByUsername(username).orElseThrow();
+        user.getFavoriteItems().add(item);
+        userRepository.save(user);
+
+    }
+
+    public void deleteFavoriteProduct(String username, Item item){
+        AppUser user = userRepository.findByUsername(username).orElseThrow();
+        user.getFavoriteItems().remove(item);
+        userRepository.save(user);
     }
 }

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Rating from "./Rating.jsx";
 
 export default function Shop({ setCartCount, categories }) {
     const [items, setItems] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [favorites, setFavorites] = useState([]);
+
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
@@ -24,10 +27,13 @@ export default function Shop({ setCartCount, categories }) {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return response.json();
         })
-        .then((data) => setItems(data))
+        .then((data) => setItems(data.sort((a, b) => a.name.localeCompare(b.name))))
         .catch((error) => console.error("Error fetching items:", error));
 
     }, [navigate, token]);
+
+
+
 
     const AddToCart = async (itemId) => {
         try {
@@ -48,6 +54,58 @@ export default function Shop({ setCartCount, categories }) {
             console.error("Error adding to cart:", error);
         }
     };
+
+    const fetchFavorites = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/item/favorites", {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+            if (!response.ok) throw new Error("Failed to fetch favorites");
+            const data = await response.json();
+            setFavorites(data);
+
+        } catch {
+            console.error("Cannot fetch favorites")
+        }
+    };
+
+
+    const AddToFavorites = async (itemId) => {
+        try{
+            const response = await fetch(`http://localhost:8080/item/favorites/${itemId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                method: "POST"
+            });
+            if (!response.ok) throw new Error("Failed to delete favorite");
+            fetchFavorites()
+        }
+        catch {
+            console.error("Cannot add favorite")
+        }
+
+
+    }
+
+    const RemoveFromFavorites = async (itemId) => {
+        try{
+            const response = await fetch(`http://localhost:8080/item/favorites/${itemId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                method: "DELETE"
+            });
+            if (!response.ok) throw new Error("Failed to delete favorite");
+            fetchFavorites()
+        }
+        catch {
+            console.error("Cannot add favorite")
+        }
+
+
+    }
+
+    useEffect(()=>{
+        fetchFavorites();
+    },[]);
+
 
     const handleCategoryChange = (category) => {
         setSelectedCategories(prev =>
@@ -89,7 +147,18 @@ export default function Shop({ setCartCount, categories }) {
       <div className="item-info">
         <h3>{item.name}</h3>
         <p className="item-price">{item.price} €</p>
-        <textarea className="item-description" value={item.description} readOnly />
+        <textarea className="item-description" value={item.description} readOnly disabled />
+        <Rating itemId={item.id}/>
+        <button className="favorite-btn" style={{
+            color: favorites.some(fav => fav.id === item.id) ? "red" : "white"
+        }} onClick={()=>{
+            if(favorites.map(fav => fav.id).includes(item.id)) {
+                RemoveFromFavorites(item.id);
+            }
+            else {
+                AddToFavorites(item.id);
+            }
+        }}>❤</button>
       </div>
       <div className="item-actions">
         <button onClick={() => AddToCart(item.id)}>Add to cart</button>

@@ -9,6 +9,7 @@ public record ItemResponseDTO(
         String category,
         String image_url,
         Double price,
+        Double average_rating,
         List<String> types
 ) {
 }

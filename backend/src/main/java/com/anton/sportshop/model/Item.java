@@ -1,6 +1,7 @@
 package com.anton.sportshop.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -24,6 +25,12 @@ public class Item {
     private String image_url;
 
     private Double price;
+
+    @NotNull
+    private Double average_rating = 0.0;
+
+    @NotNull
+    private Integer total_ratings = 0;
 
     @ElementCollection
     @CollectionTable(name = "item_types", joinColumns = @JoinColumn(name = "item_id"))

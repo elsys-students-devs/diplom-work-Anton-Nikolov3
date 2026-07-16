@@ -30,6 +30,7 @@ export default function Register(){
 
         if(response.ok){
             console.log("Registered")
+            navigate("/login")
         }else{
             throw new Error("Register failed");
         }

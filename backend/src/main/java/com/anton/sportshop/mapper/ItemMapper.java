@@ -24,6 +24,7 @@ public class ItemMapper {
                 item.getCategory(),
                 item.getImage_url(),
                 item.getPrice(),
+                item.getAverage_rating(),
                 item.getTypes()
         );
     }

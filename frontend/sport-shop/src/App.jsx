@@ -10,6 +10,7 @@ import Shop from './Components/Shop'
 import Admin from './Components/Admin'
 import UpdateItem from './Components/UpdateItem'
 import MyOrders from './Components/MyOrders'
+import Favorites from './Components/Favorites.jsx'
 
 export  default function App() {
   const categories = [
@@ -23,7 +24,7 @@ export  default function App() {
   "Boxing"
   ];
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [admin, setRole] = useState(localStorage.getItem("isAdmin"));
+  const [admin, setRole] = useState(localStorage.getItem("isAdmin") === "true");
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export  default function App() {
     setCartCount(0);
     return;
   }
+
 
   const fetchCart = async () => {
     try {
@@ -75,6 +77,7 @@ export  default function App() {
               </Link>
               </li>
               <li><Link to="/orders">My Orders</Link></li>
+                <li><Link to="/favorites">Favorites</Link></li>
             </div>
             
             {admin? 
@@ -108,6 +111,7 @@ export  default function App() {
             <Route path='/shop' element={<Shop 
             setCartCount={setCartCount} categories={categories} />}/>
             <Route path='/admin' element={<Admin categories={categories}/>}></Route>
+            <Route path='/favorites' element={<Favorites/>}></Route>
 
             <Route path='/update' element={<UpdateItem/>}></Route>
             <Route path='/orders' element={<MyOrders/>}></Route>

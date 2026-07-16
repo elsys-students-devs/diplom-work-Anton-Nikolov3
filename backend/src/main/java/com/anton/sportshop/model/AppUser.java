@@ -3,6 +3,9 @@ package com.anton.sportshop.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,4 +27,8 @@ public class AppUser {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private  Cart cart;
+
+    @ManyToMany
+    private Set<Item> favoriteItems = new HashSet<>();
+
 }
