@@ -12,7 +12,7 @@ import UpdateItem from './Components/UpdateItem'
 import MyOrders from './Components/MyOrders'
 import Favorites from './Components/Favorites.jsx'
 
-export  default function App() {
+export default function App() {
   const categories = [
   "Football",
   "Basketball",

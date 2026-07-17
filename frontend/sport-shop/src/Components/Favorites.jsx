@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, use} from "react";
+import { useNavigate } from "react-router-dom";
 import Rating from "./Rating.jsx";
 
 export default function MyOrders() {
+    const navigate = useNavigate();
     const [favorites, setFavorites] = useState([]);
     const [error, setError] = useState(null);
 
@@ -36,9 +38,13 @@ export default function MyOrders() {
         }
     };
 
-    useEffect(() => {
+    useEffect(()=>{
+        if(!token){
+            navigate("/login");
+            return;
+        }
         fetchFavorites();
-    }, []);
+    },[]);
 
     return (
         <div id="body">

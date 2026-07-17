@@ -20,7 +20,7 @@ export default function CreateOrder() {
   };
 
   const makeOrder = async (e) => {
-    e.preventDefault(); // 🚨 prevent reload
+    e.preventDefault();
     try {
       const response = await fetch("http://localhost:8080/order", {
         method: "POST",

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function MyOrders() {
+    const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [error, setError] = useState(null);
@@ -34,6 +36,11 @@ export default function MyOrders() {
     };
 
     useEffect(() => {
+        if(!token){
+            navigate("/login");
+            return;
+        }
+
         fetchOrders();
     }, []);
 

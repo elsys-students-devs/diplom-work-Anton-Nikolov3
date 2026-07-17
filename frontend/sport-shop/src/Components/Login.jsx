@@ -27,20 +27,21 @@ export default function Login({ setToken, setRole }) {
 
             if (!response.ok) {
 
-            if (response.status === 400) {
-                throw new Error("Invalid input data");
-            }
 
-            if (response.status === 401) {
-                throw new Error("Wrong username or password");
-            }
+                if (response.status === 400) {
+                    throw new Error("Invalid input data");
+                }
 
-            if (response.status === 403) {
-                throw new Error("You do not have permission");
-            }
+                if (response.status === 401) {
+                    throw new Error("Wrong username or password");
+                }
 
-            if (response.status === 500) {
-                    throw new Error("Server error. Try again later.");
+                if (response.status === 403) {
+                    throw new Error("You do not have permission");
+                }
+
+                if (response.status === 500) {
+                        throw new Error("Server error. Try again later.");
                 }
 
                 throw new Error("Unexpected error");

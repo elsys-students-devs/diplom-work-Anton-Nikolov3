@@ -67,7 +67,6 @@ export default function Rating({ itemId }){
         try {
             const token = localStorage.getItem("token");
 
-
             const response = await fetch(
                 `http://localhost:8080/ratings/${itemId}`,
                 {
@@ -76,14 +75,12 @@ export default function Rating({ itemId }){
                         Authorization: `Bearer ${token}`,
                     },
                     method:"DELETE"
-
                 }
             );
 
             if (!response.ok) {
                 throw new Error("Failed to delete rating");
             }
-
 
             setRating(0);
         } catch (error) {

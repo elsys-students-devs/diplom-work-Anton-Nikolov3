@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Register(){
@@ -10,9 +10,12 @@ export default function Register(){
         password:"",
     });
 
-    if(token){
-        navigate("\shop")
-    }
+    useEffect(()=>{
+        if(token){
+            navigate("/shop")
+        }
+    },[]);
+
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
